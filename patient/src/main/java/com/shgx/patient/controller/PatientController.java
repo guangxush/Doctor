@@ -4,6 +4,7 @@ import com.shgx.common.model.ApiResponse;
 import com.shgx.patient.model.Patient;
 import com.shgx.patient.pingback.PingBackService;
 import com.shgx.patient.service.PatientService;
+import com.shgx.patient.service.SendMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +23,14 @@ public class PatientController {
     @Autowired
     private PingBackService pingBackService;
 
-    private final String url = "";
+    @Autowired
+    private SendMessageService sendMessageService;
+
+    private final String url = "http://localhost:8081/pingback/";
 
     @RequestMapping(path = "/query/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResponse<Patient> queryScore(@PathVariable("id") Long id) {
+    public ApiResponse<Patient> query(@PathVariable("id") Long id) {
         if (id == null) {
             return new ApiResponse<Patient>().fail(new Patient());
         }
@@ -34,32 +38,41 @@ public class PatientController {
         return new ApiResponse<Patient>().success(patient);
     }
 
-
+    /**
+     * pingback方式插入
+     * @param patient
+     * @return
+     */
     @RequestMapping(path = "/insert", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Boolean> insertBusiness(@RequestBody Patient patient) {
+    public ApiResponse<Boolean> insert(@RequestBody Patient patient) {
         try{
             Boolean result = patientService.savePatient(patient);
             return new ApiResponse<Boolean>().success(result);
         }catch (InternalError error){
             log.error("insert error");
         }finally {
-            pingBackService.jsonRequest(url, patient);
+            pingBackService.jsonRequest(url+"insert", patient);
         }
         return null;
     }
 
 
+    /**
+     * 消息中间件的方式更新
+     * @param patient
+     * @return
+     */
     @RequestMapping(path = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Boolean> updateBusiness(@RequestBody Patient patient) {
+    public ApiResponse<Boolean> update(@RequestBody Patient patient) {
         try{
             Boolean result = patientService.updatePatient(patient);
             return new ApiResponse<Boolean>().success(result);
         }catch (InternalError error){
             log.error("update error");
         }finally {
-            pingBackService.jsonRequest(url, patient);
+            sendMessageService.send(patient);
         }
         return null;
     }

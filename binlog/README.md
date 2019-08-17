@@ -1,7 +1,7 @@
 ### 创建数据库
-patient
+pingBack
 ```sql
-CREATE TABLE `test`.`patient`  (
+CREATE TABLE `test`.`pingBack`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `commenttime` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
@@ -23,12 +23,12 @@ CREATE TABLE `test`.`kafkapatient`  (
 启动kafka
 /usr/local/Cellar/kafka/2.2.1/bin/kafka-server-start /usr/local/etc/kafka/server.properties &
 创建topic
-./bin/kafka-run-class.sh  kafka.admin.TopicCommand --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic mysql-kafka-patient
+./bin/kafka-run-class.sh  kafka.admin.TopicCommand --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic mysql-kafka-pingBack
 ### kafka监听binlog
 新建source/sink配置文件，并放置在kafka config目录下
 vim quickstart-mysql.properties
 ```text
-name=mysql-b-source-patient
+name=mysql-b-source-pingBack
 connector.class=io.confluent.connect.jdbc.JdbcSourceConnector
 tasks.max=1
 connection.url=jdbc:mysql://localhost:3306/test?user=root&password=root
@@ -38,14 +38,14 @@ mode=timestamp+incrementing
 timestamp.column.name=commenttime
 # 自增字段  id
 incrementing.column.name=id
-# 白名单表  patient
-table.whitelist=patient
+# 白名单表  pingBack
+table.whitelist=pingBack
 # topic前缀   mysql-kafka-
 topic.prefix=mysql-kafka-
 ```
 vim quickstart-mysql-sink.properties
 ```text
-name=mysql-b-source-patient
+name=mysql-b-source-pingBack
 connector.class=io.confluent.connect.jdbc.JdbcSourceConnector
 tasks.max=1
 connection.url=jdbc:mysql://localhost:3306/test?user=root&password=root
@@ -54,8 +54,8 @@ mode=timestamp+incrementing
 # 自增字段  id
 timestamp.column.name=commenttime
 incrementing.column.name=id
-# 白名单表  patient
-table.whitelist=patient
+# 白名单表  pingBack
+table.whitelist=pingBack
 # topic前缀   mysql-kafka-
 topic.prefix=mysql-kafka-
 ```

@@ -16,7 +16,7 @@
 
     <modules>
         <module>common</module>
-        <module>patient</module>
+        <module>pingBack</module>
         <module>pingback</module>
         <module>message</module>
         <module>binlog</module>

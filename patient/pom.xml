@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.shgx</groupId>
-    <artifactId>patient</artifactId>
+    <artifactId>pingBack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>patient</name>
+    <name>pingBack</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
