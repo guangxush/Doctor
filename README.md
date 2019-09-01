@@ -1,16 +1,16 @@
 ## 数据采集的背景
 用户每天通过不同的终端设备在系统A上做出一系列的操作，比如在新闻系统上的看一些文章，进行收藏或者点赞、评论等等，会触发A系统下不同的微服务，如abc等，如何记录好用户的行为信息，并将其保存下来用于分析用户的行为偏好，需要结合不同的数据采集策略。
-![业务系统](https://upload-images.jianshu.io/upload_images/7632302-e88faa5e2ac2d9c5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![业务系统](https://github.com/guangxush/iTechHeart/blob/master/image/Doctor/Doctor1.png)
 
 ## 数据采集的几种方式
 ### 方式一：读备份库
 为了不影响业务系统的正常运行，可以采用读备份库的数据，这样能够及时获取数据进行一些分析工作，但是有些从业务也会读取备份数据库，还需要考虑一致性和可用性问题。
 
-![数据库备份](https://upload-images.jianshu.io/upload_images/7632302-449511351e9ac077.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![数据库备份](https://github.com/guangxush/iTechHeart/blob/master/image/Doctor/Doctor2.png)
 
 ### 方式一： 埋点(pingback)
 可以在前端APP上记录用户点击，滑动速度，停留时间，进入的时间段，最后看的新闻等等信息，这些可以通过网络传输将埋点信息记录下来，用于数据分析。但是这种方式有可能会对业务系统代码具有一定的侵入性，同时工作量也比较大，存在一定的安全隐患。
-![埋点](https://upload-images.jianshu.io/upload_images/7632302-4a4009a10a00fda0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![埋点](https://github.com/guangxush/iTechHeart/blob/master/image/Doctor/pingback.png)
 
 后端采集数据的service
 ```
@@ -50,7 +50,7 @@
 ### 方式三： 发送消息的方式
 上述埋点的方式在业务系统繁忙的情况下，会对数据采集系统产生大量的请求，如果数据处理不及时会把数据采集服务打垮，同时为了解耦，这里可以引入消息中间件，如果对时效性要求较高，可以采用推模式对数据采集系统进行推送，如果时效性不是很高，可以采用定时任务拉取数据，再进行分析。
 同时可以多个系统订阅消息中间件中不同Topic的数据，可以对数据进行重用，后端多个数据分析系统之间互不影响，减轻了从业务系统采集多份数据的压力。
-![引入消息中间件](https://upload-images.jianshu.io/upload_images/7632302-c0670d854026c305.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![引入消息中间件](https://github.com/guangxush/iTechHeart/blob/master/image/Doctor/message.png)
 数据采集Service
  ```
 /**
